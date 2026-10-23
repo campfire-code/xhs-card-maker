@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>自检（开发用）</title></head>
+<body style="margin:0;font:13px sans-serif"><pre id="out">running</pre><div id="imgs" style="display:flex;gap:8px;flex-wrap:wrap"></div><script type="module">
+// 每套模板都用示例正文画一遍、编成 PNG，检查 PNG 文件头和尺寸；?show=模板&cards=0,1 时把这几张显示出来便于截图检查
+import { parseDeck } from '/src/tool/core.ts';
+import { TEMPLATES, renderAll } from '/src/tool/render.ts';
+import { SAMPLE } from '/src/tool/sample.ts';
+const q = new URLSearchParams(location.search);
+const res = [];
+window.__pngs = {};
+const longText = '收纳清单\n---\n清单\n' + Array.from({ length: 16 }, (_, i) => `- 第 ${i + 1} 条：把常用的东西放在顺手的位置，每次用完放回原处，坚持一周就会习惯。`).join('\n');
+for (const t of TEMPLATES) {
+  for (const [label, text] of [['示例', SAMPLE], ['超长', longText]]) {
+    const { cards, pngs } = await renderAll(parseDeck(text), t, '@篝火工具箱');
+    const bad = [];
+    for (const png of pngs) {
+      const magic = Array.from(png.slice(0, 8)).map((b) => b.toString(16).padStart(2, '0')).join('');
+      const bmp = await createImageBitmap(new Blob([png], { type: 'image/png' }));
+      if (magic !== '89504e470d0a1a0a' || bmp.width !== 1080 || bmp.height !== 1440) bad.push(`${magic} ${bmp.width}x${bmp.height}`);
+    }
+    const sizes = cards.filter((c) => c.kind === 'page').map((c) => c.body.size);
+    res.push(`${t.id} ${label}: ${pngs.length} 张 ${bad.length ? '异常 ' + bad.join(',') : '全部 PNG 1080x1440'} 正文字号 ${sizes.join('/')} 续页 ${cards.filter((c) => c.cont).length}`);
+    window.__pngs[`${t.id}-${label}`] = pngs.map((p) => 'data:image/png;base64,' + btoa(Array.from(p, (b) => String.fromCharCode(b)).join('')));
+  }
+}
+const show = q.get('show');
+if (show) for (const i of (q.get('cards') ?? '0,1').split(',')) {
+  const img = new Image(); img.src = window.__pngs[`${show}-${q.get('set') ?? '示例'}`][Number(i)]; img.style.width = '500px'; document.getElementById('imgs').append(img);
+}
+document.getElementById('out').textContent = res.join('\n');
+</script></body></html>

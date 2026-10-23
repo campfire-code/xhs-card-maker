@@ -1,0 +1,21 @@
+/* 小红书图文卡片生成：只用 kit.css 的变量，类名以 xc- 开头 */
+.xc { flex: 1; display: grid; grid-template-columns: minmax(250px, 340px) minmax(0, 1fr); gap: 14px; align-items: start; min-height: 0; }
+.xc-edit { position: sticky; top: 0; display: flex; flex-direction: column; gap: 14px; padding: 14px; max-height: 100%; }
+.xc-grow { flex: 1; min-height: 0; }
+.xc-text { min-height: 260px; height: 46vh; resize: vertical; font-size: .95em; }
+.xc-tpls { display: flex; flex-wrap: wrap; gap: 6px; }
+.xc-tpls .k-chip { padding: 4px 10px 4px 6px; }
+.xc-sw { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--line-strong); flex: none; }
+.xc-view { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.xc-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.xc-dir { max-width: min(320px, 100%); }
+.xc-dir span { max-width: 260px; }
+.xc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.xc-card { display: grid; gap: 6px; padding: 0; border: 0; background: none; cursor: zoom-in; text-align: center; font-size: .88em; min-width: 0; }
+.xc-card canvas { width: 100%; aspect-ratio: 3 / 4; height: auto; border-radius: min(var(--radius-lg), 12px); border: 1px solid var(--line); background: var(--chip); transition: border-color .15s var(--ease), transform .15s var(--ease); }
+.xc-card:hover canvas { border-color: var(--primary); transform: translateY(-2px); }
+.xc-zoom { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: color-mix(in srgb, var(--ink) 45%, transparent); }
+.xc-zoom-box { display: grid; gap: 12px; padding: 14px; max-height: 100%; }
+.xc-zoom-box canvas { height: min(72vh, 900px); width: auto; aspect-ratio: 3 / 4; border-radius: var(--radius); border: 1px solid var(--line); }
+.xc-zoom-bar { display: flex; align-items: center; justify-content: center; gap: 10px; }
+@media (max-width: 760px) { .xc { grid-template-columns: 1fr; } .xc-edit { position: static; } }

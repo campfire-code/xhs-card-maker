@@ -1,0 +1,13 @@
+{
+  "id": "c17",
+  "slug": "xhs-card-maker",
+  "name": "小红书图文卡片生成",
+  "version": "0.1.0",
+  "repo": "campfire-code/xhs-card-maker",
+  "license": "MIT",
+  "ui": {
+    "layout": "b",
+    "palette": "blue"
+  },
+  "upstream": null
+}
