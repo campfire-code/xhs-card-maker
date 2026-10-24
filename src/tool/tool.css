@@ -1,5 +1,5 @@
 /* 小红书图文卡片生成：只用 kit.css 的变量，类名以 xc- 开头 */
-.xc { flex: 1; display: grid; grid-template-columns: minmax(250px, 340px) minmax(0, 1fr); gap: 14px; align-items: start; min-height: 0; }
+.xc { font-size: 13.5px; flex: 1; display: grid; grid-template-columns: minmax(250px, 310px) minmax(0, 1fr); gap: 14px; align-items: start; min-height: 0; }
 .xc-edit { position: sticky; top: 0; display: flex; flex-direction: column; gap: 14px; padding: 14px; max-height: 100%; }
 .xc-grow { flex: 1; min-height: 0; }
 .xc-text { min-height: 260px; height: 46vh; resize: vertical; font-size: .95em; }
@@ -10,12 +10,25 @@
 .xc-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .xc-dir { max-width: min(320px, 100%); }
 .xc-dir span { max-width: 260px; }
-.xc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
-.xc-card { display: grid; gap: 6px; padding: 0; border: 0; background: none; cursor: zoom-in; text-align: center; font-size: .88em; min-width: 0; }
-.xc-card canvas { width: 100%; aspect-ratio: 3 / 4; height: auto; border-radius: min(var(--radius-lg), 12px); border: 1px solid var(--line); background: var(--chip); transition: border-color .15s var(--ease), transform .15s var(--ease); }
-.xc-card:hover canvas { border-color: var(--primary); transform: translateY(-2px); }
+.xc-stage { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; }
+.xc-hero { display: grid; gap: 8px; justify-items: center; }
+.xc-desk { padding: 18px 20px; border-radius: var(--radius-lg); border: 1px solid var(--line); background: radial-gradient(circle at 30% 20%, var(--primary-soft), var(--chip) 70%); }
+.xc-big { cursor: zoom-in; padding: 0; border: 0; background: none; display: block; }
+.xc-card.xc-big canvas { height: min(52vh, 520px); width: auto; aspect-ratio: 3 / 4; border-radius: 10px; border: 0; box-shadow: 0 14px 34px color-mix(in srgb, var(--ink) 22%, transparent), 0 2px 6px color-mix(in srgb, var(--ink) 14%, transparent); }
+.xc-card.xc-big:hover canvas { transform: none; }
+.xc-hero-bar { display: flex; align-items: center; gap: 12px; }
+.xc-hero-name { display: grid; text-align: center; min-width: 96px; line-height: 1.3; }
+.xc-hero-name b { font-size: 1.1em; }
+.xc-nav { width: 32px; height: 32px; border: 1px solid var(--line); background: var(--surface); }
+.xc-nav:disabled { opacity: .4; cursor: not-allowed; }
+.xc-strip { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 12px 10px; align-content: start; }
+.xc-card { display: grid; gap: 4px; padding: 0; border: 0; background: none; cursor: pointer; text-align: center; font-size: .9em; color: var(--muted); min-width: 0; }
+.xc-card canvas { width: 100%; aspect-ratio: 3 / 4; height: auto; border-radius: min(var(--radius-lg), 8px); border: 2px solid var(--line); background: var(--chip); transition: border-color .15s var(--ease), transform .15s var(--ease); }
+.xc-card:hover canvas { border-color: var(--line-strong); transform: translateY(-2px); }
+.xc-card.on canvas { border-color: var(--primary); }
+.xc-card.on { color: var(--primary); font-weight: 600; }
 .xc-zoom { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: color-mix(in srgb, var(--ink) 45%, transparent); }
 .xc-zoom-box { display: grid; gap: 12px; padding: 14px; max-height: 100%; }
 .xc-zoom-box canvas { height: min(72vh, 900px); width: auto; aspect-ratio: 3 / 4; border-radius: var(--radius); border: 1px solid var(--line); }
 .xc-zoom-bar { display: flex; align-items: center; justify-content: center; gap: 10px; }
-@media (max-width: 760px) { .xc { grid-template-columns: 1fr; } .xc-edit { position: static; } }
+@media (max-width: 760px) { .xc, .xc-stage { grid-template-columns: 1fr; } .xc-edit { position: static; } }

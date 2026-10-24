@@ -15,7 +15,7 @@ const DEFAULTS: Prefs = { template: TEMPLATES[0].id, signature: '@你的小红�
 /** 小红书一篇笔记最多 18 张图 */
 const XHS_MAX = 18;
 
-function CardCanvas({ card, index, total, t, signature, onOpen }: { card: Card; index: number; total: number; t: Template; signature: string; onOpen?: () => void }) {
+function CardCanvas({ card, index, total, t, signature, onOpen, cls = '', hint = '点击放大', plain }: { card: Card; index: number; total: number; t: Template; signature: string; onOpen?: () => void; cls?: string; hint?: string; plain?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const thumb = !!onOpen;
   useEffect(() => {
@@ -25,9 +25,9 @@ function CardCanvas({ card, index, total, t, signature, onOpen }: { card: Card; 
   }, [card, index, total, t, signature, thumb]);
   const label = index === 0 ? '封面' : `第 ${index + 1} 张`;
   return onOpen ? (
-    <button className="xc-card" onClick={onOpen} title="点击放大">
+    <button className={`xc-card ${cls}`} onClick={onOpen} title={hint}>
       <canvas ref={ref} aria-label={label} />
-      <span className="k-muted k-num">{label}{card.kind === 'page' && card.cont ? '（续页）' : ''}</span>
+      {!plain && <span className="k-num">{label}{card.kind === 'page' && card.cont ? '（续页）' : ''}</span>}
     </button>
   ) : <canvas ref={ref} aria-label={label} />;
 }
@@ -39,6 +39,7 @@ export function Main({ ctx }: { ctx?: Ctx }) {
   const [busy, setBusy] = useState<'' | 'ai' | 'export'>('');
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string; dir?: string } | null>(null);
   const [zoom, setZoom] = useState<number | null>(null);
+  const [sel, setSel] = useState(0);
   const [defaultDir, setDefaultDir] = useState('');
   const loaded = useRef(false);
 
@@ -68,6 +69,8 @@ export function Main({ ctx }: { ctx?: Ctx }) {
   const deck = useMemo(() => parseDeck(text), [text]);
   const cards = useMemo(() => layoutCards(deck, t), [deck, t]);
   const outDir = prefs.outDir || defaultDir;
+  const cur = Math.min(sel, Math.max(0, cards.length - 1));
+  const curLabel = cur === 0 ? '封面' : `内容卡 ${cur}`;
 
   useEffect(() => {
     if (zoom == null) return;
@@ -166,9 +169,23 @@ export function Main({ ctx }: { ctx?: Ctx }) {
             <button className="k-icon-btn" aria-label="关闭提示" onClick={() => setMsg(null)}><X size={14} /></button>
           </div>
         )}
-        <div className="xc-grid">
-          {cards.map((c, i) => <CardCanvas key={i} card={c} index={i} total={cards.length} t={t} signature={prefs.signature} onOpen={() => setZoom(i)} />)}
-        </div>
+        {cards[cur] && (
+          <div className="xc-stage">
+            <div className="xc-hero">
+              <div className="xc-desk">
+                <CardCanvas card={cards[cur]} index={cur} total={cards.length} t={t} signature={prefs.signature} onOpen={() => setZoom(cur)} cls="xc-big" plain />
+              </div>
+              <div className="xc-hero-bar">
+                <button className="k-icon-btn xc-nav" aria-label="上一张" disabled={cur === 0} onClick={() => setSel(cur - 1)}><ChevronLeft size={18} /></button>
+                <span className="xc-hero-name"><b>{curLabel}</b><span className="k-muted k-num">{cur + 1} / {cards.length}</span></span>
+                <button className="k-icon-btn xc-nav" aria-label="下一张" disabled={cur === cards.length - 1} onClick={() => setSel(cur + 1)}><ChevronRight size={18} /></button>
+              </div>
+            </div>
+            <div className="xc-strip" aria-label="全部卡片">
+              {cards.map((c, i) => <CardCanvas key={i} card={c} index={i} total={cards.length} t={t} signature={prefs.signature} onOpen={() => setSel(i)} hint="查看这一张" cls={i === cur ? 'on' : ''} />)}
+            </div>
+          </div>
+        )}
       </section>
 
       {zoom != null && cards[zoom] && (
